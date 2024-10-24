@@ -291,6 +291,7 @@ function Authencation(req, res, next) {
 
 // Authencation();
 
+// endpoint to check user is loggin or not 
 app.get("/isLoggedIn", Authencation, (req, res) => {
   let user = req.user;
   return res.status(200).json({
@@ -300,9 +301,10 @@ app.get("/isLoggedIn", Authencation, (req, res) => {
 });
 
 
+// endpoint to get profile 
 app.get("/profile" , Authencation , (req , res) =>{
     let LogginMail = req.user.email;
-    let userPosts = null;
+    let userPosts = [];
     for (const userKey in gptData) {
         if (gptData[userKey].email === LogginMail) {
             userPosts = gptData[userKey].posts;
@@ -322,4 +324,19 @@ app.get("/profile" , Authencation , (req , res) =>{
 
 });
 
+
+// endpoint for get Timeline 
+app.get("/timeline", Authencation, (req, res) => {
+    let LogginMail = req.user.email;
+    let timelinePosts = [];
+    for (let userKey in gptData){
+        if(gptData[userKey].email != LogginMail){
+            timelinePosts =timelinePosts.concat(gptData[userKey].posts)
+        }
+    }
+    return res.status(200).json({
+        message : "timeline posts",
+        posts : timelinePosts
+    });
+})
 app.listen(port, () => console.log(`Server running on port ${port}`));
