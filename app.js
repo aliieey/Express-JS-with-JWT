@@ -299,4 +299,27 @@ app.get("/isLoggedIn", Authencation, (req, res) => {
   });
 });
 
+
+app.get("/profile" , Authencation , (req , res) =>{
+    let LogginMail = req.user.email;
+    let userPosts = null;
+    for (const userKey in gptData) {
+        if (gptData[userKey].email === LogginMail) {
+            userPosts = gptData[userKey].posts;
+            break;
+        }
+    }
+    if(userPosts){
+        return res.status(200).json({
+            message: "User profile",
+            posts:userPosts
+        })
+    }else{
+        return res.status(404).json({
+            message: "User not found"
+    });
+    }
+
+});
+
 app.listen(port, () => console.log(`Server running on port ${port}`));
